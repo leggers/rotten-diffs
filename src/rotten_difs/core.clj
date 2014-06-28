@@ -36,7 +36,7 @@
   (json/read-str content
                  :key-fn keyword))
 
-(defn get-list-of-moves-from-list-page
+(defn get-list-of-movies-from-list-page
   [list-page-url]
   (:pages
       (:query
