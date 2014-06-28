@@ -1,6 +1,7 @@
 (ns rotten-difs.core
   (:require [clj-http.client :as http])
-  (:require [clojure.data.json :as json]))
+  (:require [clojure.data.json :as json])
+  (:require [net.cgrand.enlive-html :as html]))
 
 (def api-key "4j3pebccyj3f9brmn8k4q4yt")
 (def wikipedia-list-url-base "http://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=content&titles=List%20of%20films:")
