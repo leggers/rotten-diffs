@@ -13,7 +13,7 @@
 (def ^:dynamic *list-item-selector*
   #{[:div#mw-content-text :> :ul :> :li]
    [:div#mw-content-text :> :ul :> :li :> :ul :> :li] ; For movie series, see "Asterix Series" on http://en.wikipedia.org/wiki/List_of_films:_A
-   ;(html/but [:div#mw-content-text :> :ul :> :li :> :ul])
+   (html/but [:div#mw-content-text :> :ul :> :li :> :ul])
    })
 
 
@@ -26,13 +26,29 @@
   [suffix]
   (str wikipedia-list-url-base suffix))
 
-(defn select-list-of-movies
+(defn select-all-content-uls
   [html-data]
-  (html/select html-data *list-item-selector*))
+  (html/select html-data [:div#mw-content-text :> :ul]))
 
-(defn get-list-of-movies-from-list-page
+(defn uls-with-movies
+  [html-data]
+  (drop-last (select-all-content-uls html-data))) ; Last is "See Also ul, which we don't want."
+
+(defn all-lis
+  [html-data]
+  (html/select html-data [:li]))
+
+(defn li-contains-ul
+  [li-object]
+  (= () (html/select li-object [:ul])))
+
+(defn extract-movie-lis
+  [movie-uls]
+  (filter li-contains-ul (all-lis movie-uls)))
+
+(defn get-list-of-movies-from-wiki-url
   [list-page-url]
-  (select-list-of-movies (html-get-url list-page-url)))
+  (extract-movie-lis (uls-with-movies (html-get-url list-page-url))))
 
 
 ; Rotten Tomatoes part
