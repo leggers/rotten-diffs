@@ -40,8 +40,4 @@
   (:pages
       (:query
         (as-json
-            (get-response-body list-page-url)
-        )
-      )
-  )
-  )
+            (get-response-body list-page-url)))))
