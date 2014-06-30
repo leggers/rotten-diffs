@@ -40,9 +40,60 @@
   [movie-uls]
   (filter li-contains-ul? (all-lis movie-uls)))
 
-(defn get-list-of-movies-from-wiki-url
+(defn get-lis-of-movies-from-wiki-url
   [list-page-url]
   (extract-movie-lis (uls-with-movies (html-get-url list-page-url))))
+
+(defn get-single-release-name
+  [li]
+  (first (:content (first (:content (first (:content li)))))))
+
+(defn parse-int
+  [string]
+  (prn string)
+  (Integer. (re-find #"\d+" string)))
+
+(defn get-sigle-release-year
+  [li]
+  (parse-int (second (:content li))))
+
+(defn make-map
+  [title year]
+  {:title title
+   :year year})
+
+(defn get-single-release
+  [li]
+  (make-map (get-single-release-name li)
+            (get-sigle-release-year li)))
+
+(defn make-map-from-title-and-link
+  [title link]
+  (parse-int (first (:content link))))
+
+(defn get-multi-release-title
+  [li]
+  (first (:content (first (:content li)))))
+
+(defn get-all-releases
+  [li]
+  (let [title (get-multi-release-title li)]
+    (map (fn [link] (make-map-from-title-and-link title link))
+         (html/select li [:a]))))
+
+(defn multiple-releases?
+  [li]
+  (< 1 (count (html/select li [:a]))))
+
+(defn li-to-map
+  [li]
+  (if (multiple-releases? li)
+    (get-all-releases li)
+    (get-single-release li)))
+
+(defn movie-data-from-wiki-url
+  [url]
+  (flatten (map li-to-map (get-lis-of-movies-from-wiki-url url))))
 
 
 ; Rotten Tomatoes part
