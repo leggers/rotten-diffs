@@ -67,4 +67,12 @@
 
 (defn search-for-movie
   [title]
-  (:body (http-get-url (search-url title))))
+  (:movies (parse-json-str (:body (http-get-url (search-url title))))))
+
+(defn not-dvd-only?
+  [movie]
+  (< 0 (count (dissoc (:release_dates movie) :dvd))))
+
+(defn remove-dvd-only-releases
+  [movies]
+  (filter not-dvd-only? movies))
