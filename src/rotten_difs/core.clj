@@ -26,19 +26,19 @@
 
 (defn uls-with-movies
   [html-data]
-  (drop-last (select-all-content-uls html-data))) ; Last is "See Also ul, which we don't want."
+  (drop-last (select-all-content-uls html-data))) ; Last is "See Also" ul, which we don't want.
 
 (defn all-lis
   [html-data]
   (html/select html-data [:li]))
 
-(defn li-contains-ul
+(defn li-contains-ul?
   [li-object]
   (= () (html/select li-object [:ul])))
 
 (defn extract-movie-lis
   [movie-uls]
-  (filter li-contains-ul (all-lis movie-uls)))
+  (filter li-contains-ul? (all-lis movie-uls)))
 
 (defn get-list-of-movies-from-wiki-url
   [list-page-url]
