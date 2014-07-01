@@ -50,8 +50,7 @@
 
 (defn parse-int
   [string]
-  (prn string)
-  (Integer. (re-find #"\d+" string)))
+  (read-string (re-find #"\d+" string)))
 
 (defn get-sigle-release-year
   [li]
