@@ -50,7 +50,7 @@
 
 (defn parse-int
   [string]
-  (read-string (re-find #"\d+" string)))
+  (re-find #"\d+" string))
 
 (defn get-sigle-release-year
   [li]
@@ -68,7 +68,8 @@
 
 (defn make-map-from-title-and-link
   [title link]
-  (parse-int (first (:content link))))
+  (make-map title
+            (parse-int (first (:content link)))))
 
 (defn get-multi-release-title
   [li]
