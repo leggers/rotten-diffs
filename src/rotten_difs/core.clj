@@ -48,13 +48,13 @@
   [li]
   (first (:content (first (:content (first (:content li)))))))
 
-(defn parse-int
+(defn extract-numbers
   [string]
   (re-find #"\d+" string))
 
 (defn get-sigle-release-year
   [li]
-  (parse-int (second (:content li))))
+  (extract-numbers (second (:content li))))
 
 (defn make-map
   [title year]
@@ -69,7 +69,7 @@
 (defn make-map-from-title-and-link
   [title link]
   (make-map title
-            (parse-int (first (:content link)))))
+            (extract-numbers (first (:content link)))))
 
 (defn get-multi-release-title
   [li]
