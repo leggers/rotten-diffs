@@ -121,3 +121,56 @@
 (defn remove-dvd-only-releases
   [movies]
   (filter not-dvd-only? movies))
+
+(defn get-right-year
+  [movies year]
+  (if (> (count movies) 1)
+    (filter #(= year (:year %)) movies)))
+
+(defn find-movie
+  [movie-map]
+  (get-right-year (remove-dvd-only-releases (search-for-movie (:title movie-map)))
+                  (read-string (:year movie-map))))
+
+
+; Putting them together
+(defn aggregate-data
+  [current-results new-data]
+  (conj (:audience-favored current-results)
+        (:critic-favored current-results)
+        new-data))
+
+(defn sort-by-review-dispairity
+  [movie-data]
+  (sort-by #(:rating-difference %) movie-data)
+
+(defn update-results
+  [current-results new-data]
+  (let [sorted-aggregate (sort-by-review-dispairity (aggregate-data current-results
+                                                                    new-data))]
+    {:audience-favored (take 25 sorted-aggregate),
+     :critic-favored (take-last 25 sorted-aggregate)}))
+
+(defn get-numbers ; FINISH THIS METHOD
+  [movie-map]
+  ((find-movie movie-map)))
+
+(defn movie-data-with-review
+  [movie-map]
+  (merge movie-map (get-numbers movie-map)))
+
+(defn get-movie-difference-for-suffix
+  [suffix]
+  (map movie-data-with-review (movie-data-from-wiki-url (make-wiki-list-url suffix))))
+
+(defn find-movies-with-greatest-review-discrepancies
+  [suffixes]
+  (loop [remaining-suffixes suffixes
+         results {:audience-favored [],
+                  :critic-favored []}]
+    (if (empty? remaining-suffixes)
+      results
+      (let [[suffix & remaining] remaining-suffixes]
+        (recur remaining
+               (update-results results
+                               (get-movie-difference-for-suffix suffix)))))))
