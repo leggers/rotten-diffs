@@ -122,15 +122,23 @@
   [movies]
   (filter not-dvd-only? movies))
 
+(defn only-with-ratings
+  [movies]
+  (filter #(< 0 (get-in % [:ratings :critics_score])) movies))
+
 (defn get-right-year
   [movies year]
   (if (> (count movies) 1)
     (filter #(= year (:year %)) movies)))
 
+(defn clean-results
+  [movies year]
+  (only-with-ratings (get-right-year movies year)))
+
 (defn find-movie
   [movie-map]
-  (get-right-year (remove-dvd-only-releases (search-for-movie (:title movie-map)))
-                  (read-string (:year movie-map))))
+  (clean-results (search-for-movie (:title movie-map))
+                 (read-string (:year movie-map))))
 
 
 ; Putting them together
@@ -168,9 +176,10 @@
 (defn get-data ; FINISH THIS METHOD
   [movie-map]
   (let [rt-movie (find-movie movie-map)]
-    (if (< 1 (count rt-movie))
-      (notify-bad-data movie-map rt-movie)
-      (extract-wanted-data (first rt-movie)))))
+    (case (count rt-movie)
+      0 (println (str "No suitable results found for " (:title movie-map)))
+      1 (extract-wanted-data (first rt-movie))
+      (notify-bad-data movie-map rt-movie))))
 
 (defn movie-data-with-review
   [movie-map]
