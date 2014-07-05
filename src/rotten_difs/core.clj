@@ -142,7 +142,7 @@
 
 (defn sort-by-review-dispairity
   [movie-data]
-  (sort-by #(:rating-difference %) movie-data)
+  (sort-by #(:rating-difference %) movie-data))
 
 (defn update-results
   [current-results new-data]
@@ -151,13 +151,30 @@
     {:audience-favored (take 25 sorted-aggregate),
      :critic-favored (take-last 25 sorted-aggregate)}))
 
-(defn get-numbers ; FINISH THIS METHOD
+(defn extract-wanted-data
+  [rt-movie]
+  {:poster (get-in rt-movie [:posters :thumbnail]),
+   :audience-score (get-in rt-movie [:ratings :audience_score]),
+   :critics-score (get-in rt-movie [:ratings :critics_score]),
+   :rating (get rt-movie :mpaa_rating), ; This is sketchy; what other ratings are given?
+   :difference (- (get-in rt-movie [:ratings :audience_score]) ; "Audience is always right mentality."
+                  (get-in rt-movie [:ratings :critics_score]))}) ; High-scorers mean audience liked them but critics didn't.
+
+(defn notify-bad-data
+  [movie-map rt-movie]
+  (println (str (:title movie-map) " did not get just one result! Got:"))
+  (prn rt-movie))
+
+(defn get-data ; FINISH THIS METHOD
   [movie-map]
-  ((find-movie movie-map)))
+  (let [rt-movie (find-movie movie-map)]
+    (if (< 1 (count rt-movie))
+      (notify-bad-data movie-map rt-movie)
+      (extract-wanted-data (first rt-movie)))))
 
 (defn movie-data-with-review
   [movie-map]
-  (merge movie-map (get-numbers movie-map)))
+  (merge movie-map (get-data movie-map)))
 
 (defn get-movie-differences-for-suffix
   [suffix]
