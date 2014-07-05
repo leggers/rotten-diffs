@@ -159,7 +159,7 @@
   [movie-map]
   (merge movie-map (get-numbers movie-map)))
 
-(defn get-movie-difference-for-suffix
+(defn get-movie-differences-for-suffix
   [suffix]
   (map movie-data-with-review (movie-data-from-wiki-url (make-wiki-list-url suffix))))
 
@@ -173,4 +173,4 @@
       (let [[suffix & remaining] remaining-suffixes]
         (recur remaining
                (update-results results
-                               (get-movie-difference-for-suffix suffix)))))))
+                               (get-movie-differences-for-suffix suffix)))))))
