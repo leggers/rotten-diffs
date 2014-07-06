@@ -146,7 +146,7 @@
 ; Putting them together
 (defn aggregate-data
   [current-results new-data]
-  (conj (:audience-favored current-results)
+  (concat (:audience-favored current-results)
         (:critic-favored current-results)
         new-data))
 
