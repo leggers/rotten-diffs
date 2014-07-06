@@ -46,7 +46,7 @@
 
 (defn get-single-release-name
   [li]
-  (first (:content (first (:content (first (:content li)))))))
+  (first (:content (first (html/select li [:a])))))
 
 (defn extract-numbers
   [string]
@@ -147,7 +147,9 @@
     (clean-results (search-for-movie (:title movie-map))
                    (read-string (:year movie-map))
                    (:title movie-map))
-    (catch Exception e (println (str (:title movie-map) " " (:year movie-map) " didn't work.")))))
+    (catch Exception e
+      (pr movie-map)
+      (println " didn't work."))))
 
 
 ; Putting them together
@@ -179,13 +181,15 @@
 
 (defn notify-too-many-results
   [movie-map rt-movie]
-  (println (str (:title movie-map) " did not get just one result! Got:"))
+  (pr movie-map)
+  (print " did not get just one result! Got: ")
   (prn rt-movie)
   {})
 
 (defn notify-no-results
   [movie-map]
-  (println (str "No suitable results found for " (:title movie-map)))
+  (print "No suitable results found for ")
+  (prn movie-map)
   {})
 
 (defn get-data ; FINISH THIS METHOD
