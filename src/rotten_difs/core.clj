@@ -122,6 +122,11 @@
   [movies]
   (filter not-dvd-only? movies))
 
+(defn exact-title-match
+  [title movies]
+  (if (> count movies) 1
+    (filter #(= title (:title %)) movies)))
+
 (defn only-with-ratings
   [movies]
   (filter #(< 0 (get-in % [:ratings :critics_score])) movies))
@@ -132,14 +137,16 @@
     (filter #(= year (:year %)) movies)))
 
 (defn clean-results
-  [movies year]
-  (only-with-ratings (get-right-year movies year)))
+  [movies year title]
+  (exact-title-match title
+                     (only-with-ratings (get-right-year movies year))))
 
 (defn find-movie
   [movie-map]
   (try
     (clean-results (search-for-movie (:title movie-map))
-                 (read-string (:year movie-map)))
+                   (read-string (:year movie-map))
+                   (:title movie-map))
     (catch Exception e (println (str (:title movie-map) " " (:year movie-map) " didn't work.")))))
 
 
