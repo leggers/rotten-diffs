@@ -149,7 +149,8 @@
                    (:title movie-map))
     (catch Exception e
       (pr movie-map)
-      (println " didn't work."))))
+      (print " threw exception: ")
+      (prn e))))
 
 
 ; Putting them together
@@ -167,8 +168,8 @@
   [current-results new-data]
   (let [sorted-aggregate (sort-by-review-dispairity (aggregate-data current-results
                                                                     new-data))]
-    {:audience-favored (take 25 sorted-aggregate),
-     :critic-favored (take-last 25 sorted-aggregate)}))
+    {:critic-favored (take 25 sorted-aggregate),
+     :audience-favored (take-last 25 sorted-aggregate)}))
 
 (defn extract-wanted-data
   [rt-movie]
