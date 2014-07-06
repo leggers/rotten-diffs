@@ -137,8 +137,10 @@
 
 (defn find-movie
   [movie-map]
-  (clean-results (search-for-movie (:title movie-map))
-                 (read-string (:year movie-map))))
+  (try
+    (clean-results (search-for-movie (:title movie-map))
+                 (read-string (:year movie-map)))
+    (catch Exception e (println (str (:title movie-map) " " (:year movie-map) " didn't work.")))))
 
 
 ; Putting them together
@@ -150,7 +152,7 @@
 
 (defn sort-by-review-dispairity
   [movie-data]
-  (sort-by #(:rating-difference %) movie-data))
+  (sort-by #(:difference %) movie-data))
 
 (defn update-results
   [current-results new-data]
