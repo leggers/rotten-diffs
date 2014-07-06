@@ -170,18 +170,24 @@
    :difference (- (get-in rt-movie [:ratings :audience_score]) ; "Audience is always right mentality."
                   (get-in rt-movie [:ratings :critics_score]))}) ; High-scorers mean audience liked them but critics didn't.
 
-(defn notify-bad-data
+(defn notify-too-many-results
   [movie-map rt-movie]
   (println (str (:title movie-map) " did not get just one result! Got:"))
-  (prn rt-movie))
+  (prn rt-movie)
+  {})
+
+(defn notify-no-results
+  [movie-map]
+  (println (str "No suitable results found for " (:title movie-map)))
+  {})
 
 (defn get-data ; FINISH THIS METHOD
   [movie-map]
   (let [rt-movie (find-movie movie-map)]
     (case (count rt-movie)
-      0 (println (str "No suitable results found for " (:title movie-map)))
+      0 (notify-no-results movie-map)
       1 (extract-wanted-data (first rt-movie))
-      (notify-bad-data movie-map rt-movie))))
+      (notify-too-many-results movie-map rt-movie))))
 
 (defn movie-data-with-review
   [movie-map]
@@ -189,13 +195,14 @@
 
 (defn get-movie-differences-for-suffix
   [suffix]
-  (map movie-data-with-review (movie-data-from-wiki-url (make-wiki-list-url suffix))))
+  (remove #(nil? (:difference %))
+          (map movie-data-with-review (movie-data-from-wiki-url (make-wiki-list-url suffix)))))
 
 (defn find-movies-with-greatest-review-discrepancies
   [suffixes]
   (loop [remaining-suffixes suffixes
-         results {:audience-favored [],
-                  :critic-favored []}]
+         results {:audience-favored '(),
+                  :critic-favored '()}]
     (if (empty? remaining-suffixes)
       results
       (let [[suffix & remaining] remaining-suffixes]
