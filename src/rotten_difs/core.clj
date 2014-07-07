@@ -58,7 +58,9 @@
 
 (defn get-single-release-year
   [li]
-  (extract-numbers (second (:content li))))
+  (extract-numbers (first (filter extract-numbers
+                                  (filter #(instance? java.lang.String %)
+                                          (:content li))))))
 
 (defn make-map
   [title year]
