@@ -78,7 +78,7 @@
 (defn get-all-releases
   [li]
   (let [title (get-multi-release-title li)]
-    (map (fn [link] (make-map-from-title-and-link title link))
+    (map #(make-map-from-title-and-link title %)
          (html/select li [:a]))))
 
 (defn multiple-releases?
