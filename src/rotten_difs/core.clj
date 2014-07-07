@@ -193,7 +193,7 @@
   (println movie-map)
   {})
 
-(defn get-data ; FINISH THIS METHOD
+(defn get-data
   [movie-map]
   (let [rt-movie (find-movie movie-map)]
     (case (count rt-movie)
