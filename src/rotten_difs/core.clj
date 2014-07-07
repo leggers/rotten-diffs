@@ -44,9 +44,13 @@
   [list-page-url]
   (extract-movie-lis (uls-with-movies (html-get-url list-page-url))))
 
+(defn get-link-content
+  [link]
+  (first (:content link)))
+
 (defn get-single-release-name
   [li]
-  (first (:content (first (html/select li [:a])))))
+  (get-link-content (first (html/select li [:a]))))
 
 (defn extract-numbers
   [string]
@@ -69,7 +73,7 @@
 (defn make-map-from-title-and-link
   [title link]
   (make-map title
-            (extract-numbers (first (:content link)))))
+            (extract-numbers (get-link-content link))))
 
 (defn get-multi-release-title
   [li]
@@ -83,7 +87,7 @@
 
 (defn multiple-releases?
   [li]
-  (< 1 (count (filter #(re-matches #"\d+" %) (html/select li [:a])))))
+  (< 1 (count (filter #(re-matches #"\d+" (get-link-content %)) (html/select li [:a])))))
 
 (defn li-to-map
   [li]
