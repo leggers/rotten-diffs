@@ -143,7 +143,8 @@
 (defn clean-results
   [movies year title]
   (exact-title-match title
-                     (get-right-year (only-with-ratings movies year))))
+                     (get-right-year (only-with-ratings movies)
+                                     year)))
 
 (defn find-movie
   [movie-map]
