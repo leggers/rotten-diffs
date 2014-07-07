@@ -52,7 +52,7 @@
   [string]
   (re-find #"\d+" string))
 
-(defn get-sigle-release-year
+(defn get-single-release-year
   [li]
   (extract-numbers (second (:content li))))
 
@@ -64,7 +64,7 @@
 (defn get-single-release
   [li]
   (make-map (get-single-release-name li)
-            (get-sigle-release-year li)))
+            (get-single-release-year li)))
 
 (defn make-map-from-title-and-link
   [title link]
