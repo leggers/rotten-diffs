@@ -20,6 +20,9 @@
 (def multi-release-li
   {:tag :li, :attrs nil, :content '({:tag :i, :attrs nil, :content ("20,000 Leagues Under the Sea")} ": (" {:tag :a, :attrs {:class "mw-redirect", :title "20,000 lieues sous les mers (film)", :href "/wiki/20,000_lieues_sous_les_mers_(film)"}, :content ("1907")} ", " {:tag :a, :attrs {:title "20,000 Leagues Under the Sea (1916 film)", :href "/wiki/20,000_Leagues_Under_the_Sea_(1916_film)"}, :content ("1916")} ", " {:tag :a, :attrs {:title "20,000 Leagues Under the Sea (1954 film)", :href "/wiki/20,000_Leagues_Under_the_Sea_(1954_film)"}, :content ("1954")} ", " {:tag :a, :attrs {:title "20,000 Leagues Under the Sea (1997 Hallmark film)", :href "/wiki/20,000_Leagues_Under_the_Sea_(1997_Hallmark_film)"}, :content ("1997 Hallmark")} ", & " {:tag :a, :attrs {:title "20,000 Leagues Under the Sea (1997 Village Roadshow film)", :href "/wiki/20,000_Leagues_Under_the_Sea_(1997_Village_Roadshow_film)"}, :content ("1997 Village Roadshow")} ")")})
 
+(def multi-release-map-list
+  '({:title "20,000 Leagues Under the Sea", :year "1907"} {:title "20,000 Leagues Under the Sea", :year "1916"} {:title "20,000 Leagues Under the Sea", :year "1954"} {:title "20,000 Leagues Under the Sea", :year "1997"} {:title "20,000 Leagues Under the Sea", :year "1997"}))
+
 (deftest wiki-url-test
   (testing "WikiURL builder"
     (is (= (make-wiki-list-url "_A")
@@ -74,3 +77,8 @@
   (testing "multiple-releases? function with multiple releases"
     (is (= true
            (multiple-releases? multi-release-li)))))
+
+(deftest test-li-to-map-with-multiple-releases
+  (testing "li-to-map function with multiple releases"
+    (is (= multi-release-map-list
+           (li-to-map multi-release-li)))))
