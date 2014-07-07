@@ -83,7 +83,7 @@
 
 (defn multiple-releases?
   [li]
-  (< 1 (count (html/select li [:a]))))
+  (< 1 (count (filter #(re-matches #"\d+" %) (html/select li [:a])))))
 
 (defn li-to-map
   [li]
@@ -124,7 +124,7 @@
 
 (defn exact-title-match
   [title movies]
-  (if (> count movies) 1
+  (if (> (count movies) 1)
     (filter #(= title (:title %)) movies)))
 
 (defn only-with-ratings
@@ -150,7 +150,7 @@
     (catch Exception e
       (pr movie-map)
       (print " threw exception: ")
-      (prn e))))
+      (.printStackTrace e))))
 
 
 ; Putting them together
@@ -182,15 +182,15 @@
 
 (defn notify-too-many-results
   [movie-map rt-movie]
-  (pr movie-map)
+  (print movie-map)
   (print " did not get just one result! Got: ")
-  (prn rt-movie)
+  (println rt-movie)
   {})
 
 (defn notify-no-results
   [movie-map]
   (print "No suitable results found for ")
-  (prn movie-map)
+  (println movie-map)
   {})
 
 (defn get-data ; FINISH THIS METHOD
