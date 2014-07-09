@@ -6,7 +6,7 @@
 
 (def wikipedia-list-url-base "http://en.wikipedia.org/wiki/List_of_films:")
 (def suffix-list [ "_numbers" "_A" "_B" "_C" "_D" "_E" "_F" "_G" "_H" "_I" "_J-K"
-                  "_L" "_M" "_N-O" "_P" "_Q" "_R" "_S" "_T" "_U-V-W" "_X-Y-Z" ])
+                  "_L" "_M" "_N-O" "_P" "_Q-R" "_S" "_T" "_U-V-W" "_X-Y-Z" ])
 (def rt-base-url
   "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=4j3pebccyj3f9brmn8k4q4yt")
 
@@ -234,15 +234,10 @@
 (defn find-movies-with-greatest-review-discrepancies
   [suffixes]
   (loop [remaining-suffixes suffixes
-         results {:audience-favored '(),
-                  :critic-favored '()}]
+         results {}]
     (if (empty? remaining-suffixes)
       results
       (let [[suffix & remaining] remaining-suffixes]
         (recur remaining
-               (update-results results
+               (concat results
                                (get-movie-differences-for-suffix suffix)))))))
-
-(defn -main
-  []
-  (find-movies-with-greatest-review-discrepancies suffix-list))
