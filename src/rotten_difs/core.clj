@@ -48,13 +48,17 @@
   [link]
   (first (:content link)))
 
+(defn get-link-title
+  [link]
+  (:title (:attrs link)))
+
 (defn get-single-release-name
   [li]
-  (get-link-content (first (html/select li [:a]))))
+  (get-link-title (first (html/select li [:a]))))
 
 (defn extract-numbers
   [string]
-  (re-find #"\d+" string))
+  (if (not (empty? string)) (re-find #"\d+" string)))
 
 (defn get-single-release-year
   [li]
@@ -131,7 +135,8 @@
 (defn exact-title-match
   [title movies]
   (if (> (count movies) 1)
-    (filter #(= title (:title %)) movies)))
+    (filter #(= title (:title %)) movies)
+    movies))
 
 (defn only-with-ratings
   [movies]
@@ -140,7 +145,8 @@
 (defn get-right-year
   [movies year]
   (if (> (count movies) 1)
-    (filter #(= year (:year %)) movies)))
+    (filter #(= year (:year %)) movies)
+    movies))
 
 (defn clean-results
   [movies year title]
@@ -180,7 +186,9 @@
 
 (defn extract-wanted-data
   [rt-movie]
-  {:poster (get-in rt-movie [:posters :thumbnail]),
+  {:title (:title rt-movie),
+   :year (:year rt-movie),
+   :poster (get-in rt-movie [:posters :thumbnail]),
    :audience-score (get-in rt-movie [:ratings :audience_score]),
    :critics-score (get-in rt-movie [:ratings :critics_score]),
    :rating (get rt-movie :mpaa_rating), ; This is sketchy; what other ratings are given?
@@ -210,7 +218,13 @@
 
 (defn movie-data-with-review
   [movie-map]
-  (merge movie-map (get-data movie-map)))
+  (try
+    (merge {:wiki-title (:title movie-map), :wiki-year (:year movie-map)}
+           (get-data movie-map))
+    (catch Exception e
+      (pr movie-map)
+      (print " threw exception: ")
+      (.printStackTrace e))))
 
 (defn get-movie-differences-for-suffix
   [suffix]
@@ -228,3 +242,7 @@
         (recur remaining
                (update-results results
                                (get-movie-differences-for-suffix suffix)))))))
+
+(defn -main
+  []
+  (find-movies-with-greatest-review-discrepancies suffix-list))
