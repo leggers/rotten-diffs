@@ -7,4 +7,5 @@
                  [clj-http "0.9.2"]
                  [org.clojure/data.json "0.2.5"]
                  [enlive "1.1.5"]
-                 [ring/ring-codec "1.0.0"]])
+                 [ring/ring-codec "1.0.0"]
+                 [throttler "1.0.0"]])
