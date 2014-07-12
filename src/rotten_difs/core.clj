@@ -2,7 +2,8 @@
   (:require [clj-http.client :as http])
   (:require [clojure.data.json :as json])
   (:require [net.cgrand.enlive-html :as html])
-  (:require [ring.util.codec :as c]))
+  (:require [ring.util.codec :as c])
+  (:require [throttler.core :refer [throttle-chan throttle-fn]]))
 
 (def wikipedia-list-url-base "http://en.wikipedia.org/wiki/List_of_films:")
 (def suffix-list [ "_numbers" "_A" "_B" "_C" "_D" "_E" "_F" "_G" "_H" "_I" "_J-K"
@@ -111,6 +112,9 @@
   [url]
   (http/get url))
 
+(def throttled-get
+  (throttle-fn http-get-url 5 :second))
+
 (defn parse-json-str
   [content]
   (json/read-str content
@@ -122,7 +126,7 @@
 
 (defn search-for-movie
   [title]
-  (:movies (parse-json-str (:body (http-get-url (search-url title))))))
+  (:movies (parse-json-str (:body (throttled-get (search-url title))))))
 
 (defn not-dvd-only?
   [movie]
