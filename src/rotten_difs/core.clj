@@ -195,10 +195,12 @@
   [rt-movie]
   {:title (:title rt-movie),
    :year (:year rt-movie),
+   :api-link (get-in rt-movie [:links :self]),
+   :human-link (get-in rt-movie [:links :alternate]),
    :poster (get-in rt-movie [:posters :thumbnail]),
    :audience-score (get-in rt-movie [:ratings :audience_score]),
    :critics-score (get-in rt-movie [:ratings :critics_score]),
-   :rating (get rt-movie :mpaa_rating), ; This is sketchy; what other ratings are given?
+   :rating (get rt-movie :mpaa_rating "No Rating in Database"), ; This is sketchy; what other ratings are given?
    :difference (- (get-in rt-movie [:ratings :audience_score]) ; "Audience is always right mentality."
                   (get-in rt-movie [:ratings :critics_score]))}) ; High-scorers mean audience liked them but critics didn't.
 
