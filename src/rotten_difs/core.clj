@@ -47,7 +47,10 @@
 
 (defn get-link-content
   [link]
-  (first (:content link)))
+  (let [content (first (:content link))]
+    (if (instance? String content)
+      content
+      "")))
 
 (defn get-link-title
   [link]
